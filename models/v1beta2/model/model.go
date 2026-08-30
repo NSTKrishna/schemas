@@ -90,6 +90,22 @@ type ImportRequest struct {
 // ImportRequestUploadType Choose the method you prefer to upload your model file. Select 'File Import' or 'CSV Import' if you have the file on your local system or 'URL Import' if you have the file hosted online.
 type ImportRequestUploadType string
 
+// MeshModelCategoriesPage defines model for MeshModelCategoriesPage.
+type MeshModelCategoriesPage struct {
+	Categories *[]map[string]interface{} `json:"categories,omitempty" yaml:"categories,omitempty"`
+	Page       *int                      `json:"page,omitempty" yaml:"page,omitempty"`
+	PageSize   *int                      `json:"pageSize,omitempty" yaml:"pageSize,omitempty"`
+	TotalCount *int                      `json:"totalCount,omitempty" yaml:"totalCount,omitempty"`
+}
+
+// MeshModelComponentsPage defines model for MeshModelComponentsPage.
+type MeshModelComponentsPage struct {
+	Components *[]map[string]interface{} `json:"components,omitempty" yaml:"components,omitempty"`
+	Page       *int                      `json:"page,omitempty" yaml:"page,omitempty"`
+	PageSize   *int                      `json:"pageSize,omitempty" yaml:"pageSize,omitempty"`
+	TotalCount *int                      `json:"totalCount,omitempty" yaml:"totalCount,omitempty"`
+}
+
 // MeshModelModelsPage Page of mesh models matching the list-endpoint query.
 type MeshModelModelsPage struct {
 	// Models The models matching the list-endpoint query.
@@ -103,6 +119,22 @@ type MeshModelModelsPage struct {
 
 	// TotalCount Total number of items available.
 	TotalCount *int `json:"totalCount,omitempty" yaml:"totalCount,omitempty"`
+}
+
+// MeshModelRegistrantsPage defines model for MeshModelRegistrantsPage.
+type MeshModelRegistrantsPage struct {
+	Page        *int                      `json:"page,omitempty" yaml:"page,omitempty"`
+	PageSize    *int                      `json:"pageSize,omitempty" yaml:"pageSize,omitempty"`
+	Registrants *[]map[string]interface{} `json:"registrants,omitempty" yaml:"registrants,omitempty"`
+	TotalCount  *int                      `json:"totalCount,omitempty" yaml:"totalCount,omitempty"`
+}
+
+// MeshModelRelationshipsPage defines model for MeshModelRelationshipsPage.
+type MeshModelRelationshipsPage struct {
+	Page          *int                      `json:"page,omitempty" yaml:"page,omitempty"`
+	PageSize      *int                      `json:"pageSize,omitempty" yaml:"pageSize,omitempty"`
+	Relationships *[]map[string]interface{} `json:"relationships,omitempty" yaml:"relationships,omitempty"`
+	TotalCount    *int                      `json:"totalCount,omitempty" yaml:"totalCount,omitempty"`
 }
 
 // MesheryModelImportFormPayload Flat canonical representation of the model import form that combines the UI-level uploadType discriminator with the union of fields from the ImportBody oneOf variants. This schema is the authoritative source for the canonical RJSF form schema at schemas/constructs/v1beta2/model/forms/import.json. The server receives an ImportRequest; this form schema captures the superset of user-facing fields so the form schema can be validated as a subset of this canonical type.

@@ -218,6 +218,10 @@ const injectedRtkApi = api
         }),
         providesTags: ["Keychain_Keychain"],
       }),
+      importMeshModel: build.mutation<ImportMeshModelApiResponse, ImportMeshModelApiArg>({
+        query: (queryArg) => ({ url: `/api/meshmodels/register`, method: "POST", body: queryArg.body }),
+        invalidatesTags: ["Model_Models"],
+      }),
       getMeshModelModels: build.query<GetMeshModelModelsApiResponse, GetMeshModelModelsApiArg>({
         query: (queryArg) => ({
           url: `/api/integrations/meshmodels/models`,
@@ -2378,6 +2382,40 @@ export type GetKeysOfKeychainApiArg = {
   search?: string;
   /** Get ordered responses */
   order?: string;
+};
+export type ImportMeshModelApiResponse = /** status 201 Successful registration */ {
+  message?: string;
+};
+export type ImportMeshModelApiArg = {
+  body: {
+    importBody:
+      | {
+          /** Name of the file being uploaded. */
+          fileName: string;
+          /** Supported model file formats are: .tar, .tar.gz, and .tgz. See [Import Models Documentation](https://docs.meshery.io/guides/configuration-management/importing-models#import-models-using-meshery-ui) for details */
+          modelFile: string;
+        }
+      | {
+          /** A direct URL to a single model file, for example: https://raw.github.com/your-model-file.tar. Supported model file formats are: .tar, .tar.gz, and .tgz. \n\nFor bulk import of your model use the GitHub connection or CSV files. See [Import Models Documentation](https://docs.meshery.io/guides/configuration-management/importing-models#import-models-using-meshery-ui) for details */
+          url: string;
+        }
+      | {
+          /** Upload a CSV file containing model definitions */
+          modelCsv: Blob;
+          /** Upload a CSV file containing component definitions */
+          componentCsv: Blob;
+          /** Upload a CSV file containing relationship definitions */
+          relationshipCsv: Blob;
+        }
+      | {
+          /** URI to the source code or package of the model. */
+          url: string;
+        };
+    /** Choose the method you prefer to upload your model file. Select 'File Import' or 'CSV Import' if you have the file on your local system or 'URL Import' if you have the file hosted online. */
+    uploadType: "file" | "urlImport" | "csv" | "url";
+    /** The register of the importrequest. */
+    register: boolean;
+  };
 };
 export type GetMeshModelModelsApiResponse = /** status 200 Model and capabilities registry entries retrieved. */ {
   /** Current page number of the result set. */
@@ -15482,6 +15520,7 @@ export const {
   useRemoveKeyFromKeychainMutation,
   useGetKeysOfKeychainQuery,
   useLazyGetKeysOfKeychainQuery,
+  useImportMeshModelMutation,
   useGetMeshModelModelsQuery,
   useLazyGetMeshModelModelsQuery,
   useGetOrgsQuery,

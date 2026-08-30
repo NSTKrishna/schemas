@@ -7,6 +7,7 @@ export const addTagTypes = [
   "System_API_System",
   "credential_credentials",
   "Key_users",
+  "Model_Models",
   "Organization_Organizations",
   "User_users",
   "Connection_API_Connections",
@@ -654,6 +655,131 @@ const injectedRtkApi = api
           },
         }),
         providesTags: ["Key_users"],
+      }),
+      getMeshModels: build.query<GetMeshModelsApiResponse, GetMeshModelsApiArg>({
+        query: (queryArg) => ({
+          url: `/api/meshmodels`,
+          params: {
+            page: queryArg?.page,
+            pagesize: queryArg?.pagesize,
+            search: queryArg?.search,
+            order: queryArg?.order,
+          },
+        }),
+        providesTags: ["Model_Models"],
+      }),
+      getComponents: build.query<GetComponentsApiResponse, GetComponentsApiArg>({
+        query: (queryArg) => ({
+          url: `/api/meshmodels/components`,
+          params: {
+            page: queryArg?.page,
+            pagesize: queryArg?.pagesize,
+            search: queryArg?.search,
+            order: queryArg?.order,
+          },
+        }),
+        providesTags: ["Model_Models"],
+      }),
+      getRelationships: build.query<GetRelationshipsApiResponse, GetRelationshipsApiArg>({
+        query: (queryArg) => ({
+          url: `/api/meshmodels/relationships`,
+          params: {
+            page: queryArg?.page,
+            pagesize: queryArg?.pagesize,
+            search: queryArg?.search,
+            order: queryArg?.order,
+          },
+        }),
+        providesTags: ["Model_Models"],
+      }),
+      getRegistrants: build.query<GetRegistrantsApiResponse, GetRegistrantsApiArg>({
+        query: (queryArg) => ({
+          url: `/api/meshmodels/registrants`,
+          params: {
+            page: queryArg?.page,
+            pagesize: queryArg?.pagesize,
+            search: queryArg?.search,
+            order: queryArg?.order,
+          },
+        }),
+        providesTags: ["Model_Models"],
+      }),
+      getComponentsFromModal: build.query<GetComponentsFromModalApiResponse, GetComponentsFromModalApiArg>({
+        query: (queryArg) => ({
+          url: `/api/meshmodels/models/${queryArg.model}/components`,
+          params: {
+            page: queryArg?.page,
+            pagesize: queryArg?.pagesize,
+          },
+        }),
+        providesTags: ["Model_Models"],
+      }),
+      getRelationshipsFromModal: build.query<GetRelationshipsFromModalApiResponse, GetRelationshipsFromModalApiArg>({
+        query: (queryArg) => ({
+          url: `/api/meshmodels/models/${queryArg.model}/relationships`,
+          params: {
+            page: queryArg?.page,
+            pagesize: queryArg?.pagesize,
+          },
+        }),
+        providesTags: ["Model_Models"],
+      }),
+      getModelCategories: build.query<GetModelCategoriesApiResponse, GetModelCategoriesApiArg>({
+        query: (queryArg) => ({
+          url: `/api/meshmodels/categories`,
+          params: {
+            page: queryArg?.page,
+            pagesize: queryArg?.pagesize,
+          },
+        }),
+        providesTags: ["Model_Models"],
+      }),
+      getModelFromCategory: build.query<GetModelFromCategoryApiResponse, GetModelFromCategoryApiArg>({
+        query: (queryArg) => ({
+          url: `/api/meshmodels/categories/${queryArg.category}/models`,
+          params: {
+            page: queryArg?.page,
+            pagesize: queryArg?.pagesize,
+          },
+        }),
+        providesTags: ["Model_Models"],
+      }),
+      getModelByName: build.query<GetModelByNameApiResponse, GetModelByNameApiArg>({
+        query: (queryArg) => ({ url: `/api/meshmodels/models/${queryArg.model}` }),
+        providesTags: ["Model_Models"],
+      }),
+      getComponentByName: build.query<GetComponentByNameApiResponse, GetComponentByNameApiArg>({
+        query: (queryArg) => ({ url: `/api/meshmodels/components/${queryArg.name}` }),
+        providesTags: ["Model_Models"],
+      }),
+      getComponentsByModelAndKind: build.query<
+        GetComponentsByModelAndKindApiResponse,
+        GetComponentsByModelAndKindApiArg
+      >({
+        query: (queryArg) => ({ url: `/api/meshmodels/models/${queryArg.model}/components/${queryArg.name}` }),
+        providesTags: ["Model_Models"],
+      }),
+      exportModel: build.query<ExportModelApiResponse, ExportModelApiArg>({
+        query: (queryArg) => ({
+          url: `/api/meshmodels/export`,
+          params: {
+            id: queryArg?.id,
+            name: queryArg?.name,
+          },
+        }),
+        providesTags: ["Model_Models"],
+      }),
+      importMeshModel: build.mutation<ImportMeshModelApiResponse, ImportMeshModelApiArg>({
+        query: (queryArg) => ({ url: `/api/meshmodels/register`, method: "POST", body: queryArg.body }),
+        invalidatesTags: ["Model_Models"],
+      }),
+      updateEntityStatus: build.mutation<UpdateEntityStatusApiResponse, UpdateEntityStatusApiArg>({
+        query: (queryArg) => ({
+          url: `/api/meshmodels/${queryArg.entityType}/status`,
+          method: "POST",
+          body: queryArg.body,
+        }),
+        invalidatesTags: ["Model_Models"],
       }),
       getOrgs: build.query<GetOrgsApiResponse, GetOrgsApiArg>({
         query: (queryArg) => ({
@@ -11452,6 +11578,921 @@ export type GetUserKeysApiArg = {
   /** Get responses by pagesize. Deprecated alias of pageSize. */
   pagesize?: number;
 };
+export type GetMeshModelsApiResponse = /** status 200 List of mesh models */ {
+  /** Current page number of the result set. */
+  page?: number;
+  /** Number of items per page. */
+  pageSize?: number;
+  /** Total number of items available. */
+  totalCount?: number;
+  /** The models matching the list-endpoint query. */
+  models?: {
+    /** Uniquely identifies the entity (i.e. component) as defined in a declaration (i.e. design). */
+    id: string;
+    /** Specifies the version of the schema used for the definition. */
+    schemaVersion: string;
+    /** Version of the model definition. */
+    version: string;
+    /** The unique name for the model within the scope of a registrant. */
+    name: string;
+    /** Human-readable name for the model. */
+    displayName: string;
+    /** Description of the model. */
+    description: string;
+    /** Status of model, including:
+        - duplicate: this component is a duplicate of another. The component that is to be the canonical reference and that is duplicated by other components should not be assigned the 'duplicate' status.
+        - maintenance: model is unavailable for a period of time.
+        - enabled: model is available for use for all users of this Meshery Server.
+        - ignored: model is unavailable for use for all users of this Meshery Server. */
+    status: "ignored" | "enabled" | "duplicate";
+    /** Connection identifying the entity that registered this model. */
+    registrant: {
+      /** Connection ID */
+      id: string;
+      /** Connection Name */
+      name: string;
+      /** Associated Credential ID */
+      credentialId?: string;
+      /** Connection Type (platform, telemetry, collaboration) */
+      type: string;
+      /** Connection Subtype (cloud, identity, metrics, chat, git, orchestration) */
+      subType: string;
+      /** Connection Kind (meshery, kubernetes, prometheus, grafana, gke, aws, azure, slack, github) */
+      kind: string;
+      /** Additional connection metadata */
+      metadata?: object;
+      /** Connection Status */
+      status:
+        | "discovered"
+        | "registered"
+        | "connected"
+        | "ignored"
+        | "maintenance"
+        | "disconnected"
+        | "deleted"
+        | "not found";
+      /** User ID who owns this connection */
+      user_id?: string;
+      created_at?: string;
+      updated_at?: string;
+      /** SQL null Timestamp to handle null values of time. */
+      deleted_at?: string;
+      /** Associated environments for this connection */
+      environments?: {
+        /** ID */
+        id: string;
+        /** Specifies the version of the schema to which the environment conforms. */
+        schemaVersion: string;
+        /** Environment name */
+        name: string;
+        /** Environment description */
+        description: string;
+        /** Environment organization ID */
+        organization_id: string;
+        /** Environment owner */
+        owner?: string;
+        /** Timestamp when the resource was created. */
+        created_at?: string;
+        /** Additional metadata associated with the environment. */
+        metadata?: object;
+        /** Timestamp when the resource was updated. */
+        updated_at?: string;
+        /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
+        deleted_at?: string | null;
+      }[];
+      /** Specifies the version of the schema used for the definition. */
+      schemaVersion: string;
+    };
+    /** ID of the registrant. */
+    registrantId: string;
+    /** ID of the category. */
+    categoryId: string;
+    /** Category the model belongs to. */
+    category: {
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+      id: string;
+      /** The category of the model that determines the main grouping. */
+      name:
+        | "Analytics"
+        | "App Definition and Development"
+        | "Cloud Native Network"
+        | "Cloud Native Storage"
+        | "Database"
+        | "Machine Learning"
+        | "Observability and Analysis"
+        | "Orchestration & Management"
+        | "Platform"
+        | "Provisioning"
+        | "Runtime"
+        | "Security & Compliance"
+        | "Serverless"
+        | "Tools"
+        | "Uncategorized";
+      /** Additional metadata associated with the category. */
+      metadata: object;
+    };
+    /** Sub-category the model belongs to. */
+    subCategory:
+      | "API Gateway"
+      | "API Integration"
+      | "Application Definition & Image Build"
+      | "Automation & Configuration"
+      | "Certified Kubernetes - Distribution"
+      | "Chaos Engineering"
+      | "Cloud Native Storage"
+      | "Cloud Provider"
+      | "CNI"
+      | "Compute"
+      | "Container Registry"
+      | "Container Runtime"
+      | "Container Security"
+      | "Container"
+      | "Content Delivery Network"
+      | "Continuous Integration & Delivery"
+      | "Coordination & Service Discovery"
+      | "Database"
+      | "Flowchart"
+      | "Framework"
+      | "Installable Platform"
+      | "Key Management"
+      | "Key Management Service"
+      | "Kubernetes"
+      | "Logging"
+      | "Machine Learning"
+      | "Management Governance"
+      | "Metrics"
+      | "Monitoring"
+      | "Networking Content Delivery"
+      | "Operating System"
+      | "Query"
+      | "Remote Procedure Call"
+      | "Scheduling & Orchestration"
+      | "Secrets Management"
+      | "Security Identity & Compliance"
+      | "Service Mesh"
+      | "Service Proxy"
+      | "Source Version Control"
+      | "Storage"
+      | "Specifications"
+      | "Streaming & Messaging"
+      | "Tools"
+      | "Tracing"
+      | "Uncategorized"
+      | "Video Conferencing";
+    /** Metadata containing additional information associated with the model. */
+    metadata?: {
+      /** Capabilities associated with the model */
+      capabilities?: {
+        /** Specifies the version of the schema to which the capability definition conforms. */
+        schemaVersion: string;
+        /** Version of the capability definition. */
+        version: string;
+        /** Name of the capability in human-readible format. */
+        displayName: string;
+        /** A written representation of the purpose and characteristics of the capability. */
+        description: string;
+        /** Top-level categorization of the capability */
+        kind: "action" | "mutate" | "view" | "interaction";
+        /** Classification of capabilities. Used to group capabilities similar in nature. */
+        type: string;
+        /** Most granular unit of capability classification. The combination of Kind, Type and SubType together uniquely identify a Capability. */
+        subType: string;
+        /** Key that backs the capability. */
+        key: string;
+        /** State of the entity in which the capability is applicable. */
+        entityState: ("declaration" | "instance")[];
+        /** Status of the capability */
+        status: "enabled" | "disabled";
+        /** Metadata contains additional information associated with the capability. Extension point. */
+        metadata?: {
+          [key: string]: any;
+        };
+      }[];
+      /** Indicates whether the model and its entities should be treated as deployable entities or as logical representations. */
+      isAnnotation?: boolean;
+      /** Primary color associated with the model. */
+      primaryColor?: string;
+      /** Secondary color associated with the model. */
+      secondaryColor?: string;
+      /** SVG representation of the model in white color. */
+      svgWhite: string;
+      /** SVG representation of the model in colored format. */
+      svgColor: string;
+      /** SVG representation of the complete model. */
+      svgComplete?: string;
+      /** Visual shape used to render the model's entities in design canvases. */
+      shape?:
+        | "ellipse"
+        | "triangle"
+        | "round-triangle"
+        | "rectangle"
+        | "round-rectangle"
+        | "bottom-round-rectangle"
+        | "cut-rectangle"
+        | "barrel"
+        | "rhomboid"
+        | "diamond"
+        | "round-diamond"
+        | "pentagon"
+        | "round-pentagon"
+        | "hexagon"
+        | "round-hexagon"
+        | "concave-hexagon"
+        | "heptagon"
+        | "round-heptagon"
+        | "octagon"
+        | "round-octagon"
+        | "star"
+        | "tag"
+        | "round-tag"
+        | "vee"
+        | "polygon";
+      [key: string]: any;
+    };
+    /** Registrant-defined data associated with the model. */
+    model: {
+      /** Version of the model as defined by the registrant. */
+      version: string;
+    };
+    /** The relationships of the model. */
+    relationships: any;
+    /** The components of the model. */
+    components: any;
+    /** Number of components associated with the model. */
+    componentsCount: number;
+    /** Number of relationships associated with the model. */
+    relationshipsCount: number;
+    /** Timestamp when the model was created. */
+    createdAt?: string;
+    /** Timestamp when the model was last updated. */
+    updatedAt?: string;
+  }[];
+};
+export type GetMeshModelsApiArg = {
+  page?: string;
+  pagesize?: string;
+  search?: string;
+  order?: string;
+};
+export type GetComponentsApiResponse = /** status 200 List of components */ {
+  page?: number;
+  pageSize?: number;
+  totalCount?: number;
+  components?: {
+    [key: string]: any;
+  }[];
+};
+export type GetComponentsApiArg = {
+  page?: string;
+  pagesize?: string;
+  search?: string;
+  order?: string;
+};
+export type GetRelationshipsApiResponse = /** status 200 List of relationships */ {
+  page?: number;
+  pageSize?: number;
+  totalCount?: number;
+  relationships?: {
+    [key: string]: any;
+  }[];
+};
+export type GetRelationshipsApiArg = {
+  page?: string;
+  pagesize?: string;
+  search?: string;
+  order?: string;
+};
+export type GetRegistrantsApiResponse = /** status 200 List of registrants */ {
+  page?: number;
+  pageSize?: number;
+  totalCount?: number;
+  registrants?: {
+    [key: string]: any;
+  }[];
+};
+export type GetRegistrantsApiArg = {
+  page?: string;
+  pagesize?: string;
+  search?: string;
+  order?: string;
+};
+export type GetComponentsFromModalApiResponse = /** status 200 Components for specified model */ {
+  page?: number;
+  pageSize?: number;
+  totalCount?: number;
+  components?: {
+    [key: string]: any;
+  }[];
+};
+export type GetComponentsFromModalApiArg = {
+  model: string;
+  page?: string;
+  pagesize?: string;
+};
+export type GetRelationshipsFromModalApiResponse = /** status 200 Relationships for specified model */ {
+  page?: number;
+  pageSize?: number;
+  totalCount?: number;
+  relationships?: {
+    [key: string]: any;
+  }[];
+};
+export type GetRelationshipsFromModalApiArg = {
+  model: string;
+  page?: string;
+  pagesize?: string;
+};
+export type GetModelCategoriesApiResponse = /** status 200 List of categories */ {
+  page?: number;
+  pageSize?: number;
+  totalCount?: number;
+  categories?: {
+    [key: string]: any;
+  }[];
+};
+export type GetModelCategoriesApiArg = {
+  page?: string;
+  pagesize?: string;
+};
+export type GetModelFromCategoryApiResponse = /** status 200 Models in category */ {
+  /** Current page number of the result set. */
+  page?: number;
+  /** Number of items per page. */
+  pageSize?: number;
+  /** Total number of items available. */
+  totalCount?: number;
+  /** The models matching the list-endpoint query. */
+  models?: {
+    /** Uniquely identifies the entity (i.e. component) as defined in a declaration (i.e. design). */
+    id: string;
+    /** Specifies the version of the schema used for the definition. */
+    schemaVersion: string;
+    /** Version of the model definition. */
+    version: string;
+    /** The unique name for the model within the scope of a registrant. */
+    name: string;
+    /** Human-readable name for the model. */
+    displayName: string;
+    /** Description of the model. */
+    description: string;
+    /** Status of model, including:
+        - duplicate: this component is a duplicate of another. The component that is to be the canonical reference and that is duplicated by other components should not be assigned the 'duplicate' status.
+        - maintenance: model is unavailable for a period of time.
+        - enabled: model is available for use for all users of this Meshery Server.
+        - ignored: model is unavailable for use for all users of this Meshery Server. */
+    status: "ignored" | "enabled" | "duplicate";
+    /** Connection identifying the entity that registered this model. */
+    registrant: {
+      /** Connection ID */
+      id: string;
+      /** Connection Name */
+      name: string;
+      /** Associated Credential ID */
+      credentialId?: string;
+      /** Connection Type (platform, telemetry, collaboration) */
+      type: string;
+      /** Connection Subtype (cloud, identity, metrics, chat, git, orchestration) */
+      subType: string;
+      /** Connection Kind (meshery, kubernetes, prometheus, grafana, gke, aws, azure, slack, github) */
+      kind: string;
+      /** Additional connection metadata */
+      metadata?: object;
+      /** Connection Status */
+      status:
+        | "discovered"
+        | "registered"
+        | "connected"
+        | "ignored"
+        | "maintenance"
+        | "disconnected"
+        | "deleted"
+        | "not found";
+      /** User ID who owns this connection */
+      user_id?: string;
+      created_at?: string;
+      updated_at?: string;
+      /** SQL null Timestamp to handle null values of time. */
+      deleted_at?: string;
+      /** Associated environments for this connection */
+      environments?: {
+        /** ID */
+        id: string;
+        /** Specifies the version of the schema to which the environment conforms. */
+        schemaVersion: string;
+        /** Environment name */
+        name: string;
+        /** Environment description */
+        description: string;
+        /** Environment organization ID */
+        organization_id: string;
+        /** Environment owner */
+        owner?: string;
+        /** Timestamp when the resource was created. */
+        created_at?: string;
+        /** Additional metadata associated with the environment. */
+        metadata?: object;
+        /** Timestamp when the resource was updated. */
+        updated_at?: string;
+        /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
+        deleted_at?: string | null;
+      }[];
+      /** Specifies the version of the schema used for the definition. */
+      schemaVersion: string;
+    };
+    /** ID of the registrant. */
+    registrantId: string;
+    /** ID of the category. */
+    categoryId: string;
+    /** Category the model belongs to. */
+    category: {
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+      id: string;
+      /** The category of the model that determines the main grouping. */
+      name:
+        | "Analytics"
+        | "App Definition and Development"
+        | "Cloud Native Network"
+        | "Cloud Native Storage"
+        | "Database"
+        | "Machine Learning"
+        | "Observability and Analysis"
+        | "Orchestration & Management"
+        | "Platform"
+        | "Provisioning"
+        | "Runtime"
+        | "Security & Compliance"
+        | "Serverless"
+        | "Tools"
+        | "Uncategorized";
+      /** Additional metadata associated with the category. */
+      metadata: object;
+    };
+    /** Sub-category the model belongs to. */
+    subCategory:
+      | "API Gateway"
+      | "API Integration"
+      | "Application Definition & Image Build"
+      | "Automation & Configuration"
+      | "Certified Kubernetes - Distribution"
+      | "Chaos Engineering"
+      | "Cloud Native Storage"
+      | "Cloud Provider"
+      | "CNI"
+      | "Compute"
+      | "Container Registry"
+      | "Container Runtime"
+      | "Container Security"
+      | "Container"
+      | "Content Delivery Network"
+      | "Continuous Integration & Delivery"
+      | "Coordination & Service Discovery"
+      | "Database"
+      | "Flowchart"
+      | "Framework"
+      | "Installable Platform"
+      | "Key Management"
+      | "Key Management Service"
+      | "Kubernetes"
+      | "Logging"
+      | "Machine Learning"
+      | "Management Governance"
+      | "Metrics"
+      | "Monitoring"
+      | "Networking Content Delivery"
+      | "Operating System"
+      | "Query"
+      | "Remote Procedure Call"
+      | "Scheduling & Orchestration"
+      | "Secrets Management"
+      | "Security Identity & Compliance"
+      | "Service Mesh"
+      | "Service Proxy"
+      | "Source Version Control"
+      | "Storage"
+      | "Specifications"
+      | "Streaming & Messaging"
+      | "Tools"
+      | "Tracing"
+      | "Uncategorized"
+      | "Video Conferencing";
+    /** Metadata containing additional information associated with the model. */
+    metadata?: {
+      /** Capabilities associated with the model */
+      capabilities?: {
+        /** Specifies the version of the schema to which the capability definition conforms. */
+        schemaVersion: string;
+        /** Version of the capability definition. */
+        version: string;
+        /** Name of the capability in human-readible format. */
+        displayName: string;
+        /** A written representation of the purpose and characteristics of the capability. */
+        description: string;
+        /** Top-level categorization of the capability */
+        kind: "action" | "mutate" | "view" | "interaction";
+        /** Classification of capabilities. Used to group capabilities similar in nature. */
+        type: string;
+        /** Most granular unit of capability classification. The combination of Kind, Type and SubType together uniquely identify a Capability. */
+        subType: string;
+        /** Key that backs the capability. */
+        key: string;
+        /** State of the entity in which the capability is applicable. */
+        entityState: ("declaration" | "instance")[];
+        /** Status of the capability */
+        status: "enabled" | "disabled";
+        /** Metadata contains additional information associated with the capability. Extension point. */
+        metadata?: {
+          [key: string]: any;
+        };
+      }[];
+      /** Indicates whether the model and its entities should be treated as deployable entities or as logical representations. */
+      isAnnotation?: boolean;
+      /** Primary color associated with the model. */
+      primaryColor?: string;
+      /** Secondary color associated with the model. */
+      secondaryColor?: string;
+      /** SVG representation of the model in white color. */
+      svgWhite: string;
+      /** SVG representation of the model in colored format. */
+      svgColor: string;
+      /** SVG representation of the complete model. */
+      svgComplete?: string;
+      /** Visual shape used to render the model's entities in design canvases. */
+      shape?:
+        | "ellipse"
+        | "triangle"
+        | "round-triangle"
+        | "rectangle"
+        | "round-rectangle"
+        | "bottom-round-rectangle"
+        | "cut-rectangle"
+        | "barrel"
+        | "rhomboid"
+        | "diamond"
+        | "round-diamond"
+        | "pentagon"
+        | "round-pentagon"
+        | "hexagon"
+        | "round-hexagon"
+        | "concave-hexagon"
+        | "heptagon"
+        | "round-heptagon"
+        | "octagon"
+        | "round-octagon"
+        | "star"
+        | "tag"
+        | "round-tag"
+        | "vee"
+        | "polygon";
+      [key: string]: any;
+    };
+    /** Registrant-defined data associated with the model. */
+    model: {
+      /** Version of the model as defined by the registrant. */
+      version: string;
+    };
+    /** The relationships of the model. */
+    relationships: any;
+    /** The components of the model. */
+    components: any;
+    /** Number of components associated with the model. */
+    componentsCount: number;
+    /** Number of relationships associated with the model. */
+    relationshipsCount: number;
+    /** Timestamp when the model was created. */
+    createdAt?: string;
+    /** Timestamp when the model was last updated. */
+    updatedAt?: string;
+  }[];
+};
+export type GetModelFromCategoryApiArg = {
+  category: string;
+  page?: string;
+  pagesize?: string;
+};
+export type GetModelByNameApiResponse = /** status 200 Model matching name */ {
+  /** Current page number of the result set. */
+  page?: number;
+  /** Number of items per page. */
+  pageSize?: number;
+  /** Total number of items available. */
+  totalCount?: number;
+  /** The models matching the list-endpoint query. */
+  models?: {
+    /** Uniquely identifies the entity (i.e. component) as defined in a declaration (i.e. design). */
+    id: string;
+    /** Specifies the version of the schema used for the definition. */
+    schemaVersion: string;
+    /** Version of the model definition. */
+    version: string;
+    /** The unique name for the model within the scope of a registrant. */
+    name: string;
+    /** Human-readable name for the model. */
+    displayName: string;
+    /** Description of the model. */
+    description: string;
+    /** Status of model, including:
+        - duplicate: this component is a duplicate of another. The component that is to be the canonical reference and that is duplicated by other components should not be assigned the 'duplicate' status.
+        - maintenance: model is unavailable for a period of time.
+        - enabled: model is available for use for all users of this Meshery Server.
+        - ignored: model is unavailable for use for all users of this Meshery Server. */
+    status: "ignored" | "enabled" | "duplicate";
+    /** Connection identifying the entity that registered this model. */
+    registrant: {
+      /** Connection ID */
+      id: string;
+      /** Connection Name */
+      name: string;
+      /** Associated Credential ID */
+      credentialId?: string;
+      /** Connection Type (platform, telemetry, collaboration) */
+      type: string;
+      /** Connection Subtype (cloud, identity, metrics, chat, git, orchestration) */
+      subType: string;
+      /** Connection Kind (meshery, kubernetes, prometheus, grafana, gke, aws, azure, slack, github) */
+      kind: string;
+      /** Additional connection metadata */
+      metadata?: object;
+      /** Connection Status */
+      status:
+        | "discovered"
+        | "registered"
+        | "connected"
+        | "ignored"
+        | "maintenance"
+        | "disconnected"
+        | "deleted"
+        | "not found";
+      /** User ID who owns this connection */
+      user_id?: string;
+      created_at?: string;
+      updated_at?: string;
+      /** SQL null Timestamp to handle null values of time. */
+      deleted_at?: string;
+      /** Associated environments for this connection */
+      environments?: {
+        /** ID */
+        id: string;
+        /** Specifies the version of the schema to which the environment conforms. */
+        schemaVersion: string;
+        /** Environment name */
+        name: string;
+        /** Environment description */
+        description: string;
+        /** Environment organization ID */
+        organization_id: string;
+        /** Environment owner */
+        owner?: string;
+        /** Timestamp when the resource was created. */
+        created_at?: string;
+        /** Additional metadata associated with the environment. */
+        metadata?: object;
+        /** Timestamp when the resource was updated. */
+        updated_at?: string;
+        /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
+        deleted_at?: string | null;
+      }[];
+      /** Specifies the version of the schema used for the definition. */
+      schemaVersion: string;
+    };
+    /** ID of the registrant. */
+    registrantId: string;
+    /** ID of the category. */
+    categoryId: string;
+    /** Category the model belongs to. */
+    category: {
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+      id: string;
+      /** The category of the model that determines the main grouping. */
+      name:
+        | "Analytics"
+        | "App Definition and Development"
+        | "Cloud Native Network"
+        | "Cloud Native Storage"
+        | "Database"
+        | "Machine Learning"
+        | "Observability and Analysis"
+        | "Orchestration & Management"
+        | "Platform"
+        | "Provisioning"
+        | "Runtime"
+        | "Security & Compliance"
+        | "Serverless"
+        | "Tools"
+        | "Uncategorized";
+      /** Additional metadata associated with the category. */
+      metadata: object;
+    };
+    /** Sub-category the model belongs to. */
+    subCategory:
+      | "API Gateway"
+      | "API Integration"
+      | "Application Definition & Image Build"
+      | "Automation & Configuration"
+      | "Certified Kubernetes - Distribution"
+      | "Chaos Engineering"
+      | "Cloud Native Storage"
+      | "Cloud Provider"
+      | "CNI"
+      | "Compute"
+      | "Container Registry"
+      | "Container Runtime"
+      | "Container Security"
+      | "Container"
+      | "Content Delivery Network"
+      | "Continuous Integration & Delivery"
+      | "Coordination & Service Discovery"
+      | "Database"
+      | "Flowchart"
+      | "Framework"
+      | "Installable Platform"
+      | "Key Management"
+      | "Key Management Service"
+      | "Kubernetes"
+      | "Logging"
+      | "Machine Learning"
+      | "Management Governance"
+      | "Metrics"
+      | "Monitoring"
+      | "Networking Content Delivery"
+      | "Operating System"
+      | "Query"
+      | "Remote Procedure Call"
+      | "Scheduling & Orchestration"
+      | "Secrets Management"
+      | "Security Identity & Compliance"
+      | "Service Mesh"
+      | "Service Proxy"
+      | "Source Version Control"
+      | "Storage"
+      | "Specifications"
+      | "Streaming & Messaging"
+      | "Tools"
+      | "Tracing"
+      | "Uncategorized"
+      | "Video Conferencing";
+    /** Metadata containing additional information associated with the model. */
+    metadata?: {
+      /** Capabilities associated with the model */
+      capabilities?: {
+        /** Specifies the version of the schema to which the capability definition conforms. */
+        schemaVersion: string;
+        /** Version of the capability definition. */
+        version: string;
+        /** Name of the capability in human-readible format. */
+        displayName: string;
+        /** A written representation of the purpose and characteristics of the capability. */
+        description: string;
+        /** Top-level categorization of the capability */
+        kind: "action" | "mutate" | "view" | "interaction";
+        /** Classification of capabilities. Used to group capabilities similar in nature. */
+        type: string;
+        /** Most granular unit of capability classification. The combination of Kind, Type and SubType together uniquely identify a Capability. */
+        subType: string;
+        /** Key that backs the capability. */
+        key: string;
+        /** State of the entity in which the capability is applicable. */
+        entityState: ("declaration" | "instance")[];
+        /** Status of the capability */
+        status: "enabled" | "disabled";
+        /** Metadata contains additional information associated with the capability. Extension point. */
+        metadata?: {
+          [key: string]: any;
+        };
+      }[];
+      /** Indicates whether the model and its entities should be treated as deployable entities or as logical representations. */
+      isAnnotation?: boolean;
+      /** Primary color associated with the model. */
+      primaryColor?: string;
+      /** Secondary color associated with the model. */
+      secondaryColor?: string;
+      /** SVG representation of the model in white color. */
+      svgWhite: string;
+      /** SVG representation of the model in colored format. */
+      svgColor: string;
+      /** SVG representation of the complete model. */
+      svgComplete?: string;
+      /** Visual shape used to render the model's entities in design canvases. */
+      shape?:
+        | "ellipse"
+        | "triangle"
+        | "round-triangle"
+        | "rectangle"
+        | "round-rectangle"
+        | "bottom-round-rectangle"
+        | "cut-rectangle"
+        | "barrel"
+        | "rhomboid"
+        | "diamond"
+        | "round-diamond"
+        | "pentagon"
+        | "round-pentagon"
+        | "hexagon"
+        | "round-hexagon"
+        | "concave-hexagon"
+        | "heptagon"
+        | "round-heptagon"
+        | "octagon"
+        | "round-octagon"
+        | "star"
+        | "tag"
+        | "round-tag"
+        | "vee"
+        | "polygon";
+      [key: string]: any;
+    };
+    /** Registrant-defined data associated with the model. */
+    model: {
+      /** Version of the model as defined by the registrant. */
+      version: string;
+    };
+    /** The relationships of the model. */
+    relationships: any;
+    /** The components of the model. */
+    components: any;
+    /** Number of components associated with the model. */
+    componentsCount: number;
+    /** Number of relationships associated with the model. */
+    relationshipsCount: number;
+    /** Timestamp when the model was created. */
+    createdAt?: string;
+    /** Timestamp when the model was last updated. */
+    updatedAt?: string;
+  }[];
+};
+export type GetModelByNameApiArg = {
+  model: string;
+};
+export type GetComponentByNameApiResponse = /** status 200 Component matching name */ {
+  page?: number;
+  pageSize?: number;
+  totalCount?: number;
+  components?: {
+    [key: string]: any;
+  }[];
+};
+export type GetComponentByNameApiArg = {
+  name: string;
+};
+export type GetComponentsByModelAndKindApiResponse = /** status 200 Components matching model and kind */ {
+  page?: number;
+  pageSize?: number;
+  totalCount?: number;
+  components?: {
+    [key: string]: any;
+  }[];
+};
+export type GetComponentsByModelAndKindApiArg = {
+  model: string;
+  name: string;
+};
+export type ExportModelApiResponse = unknown;
+export type ExportModelApiArg = {
+  id?: string;
+  name?: string;
+};
+export type ImportMeshModelApiResponse = /** status 201 Successful registration */ {
+  message?: string;
+};
+export type ImportMeshModelApiArg = {
+  body: {
+    importBody:
+      | {
+          /** Name of the file being uploaded. */
+          fileName: string;
+          /** Supported model file formats are: .tar, .tar.gz, and .tgz. See [Import Models Documentation](https://docs.meshery.io/guides/configuration-management/importing-models#import-models-using-meshery-ui) for details */
+          modelFile: string;
+        }
+      | {
+          /** A direct URL to a single model file, for example: https://raw.github.com/your-model-file.tar. Supported model file formats are: .tar, .tar.gz, and .tgz. \n\nFor bulk import of your model use the GitHub connection or CSV files. See [Import Models Documentation](https://docs.meshery.io/guides/configuration-management/importing-models#import-models-using-meshery-ui) for details */
+          url: string;
+        }
+      | {
+          /** Upload a CSV file containing model definitions */
+          modelCsv: Blob;
+          /** Upload a CSV file containing component definitions */
+          componentCsv: Blob;
+          /** Upload a CSV file containing relationship definitions */
+          relationshipCsv: Blob;
+        }
+      | {
+          /** URI to the source code or package of the model. */
+          url: string;
+        };
+    /** Choose the method you prefer to upload your model file. Select 'File Import' or 'CSV Import' if you have the file on your local system or 'URL Import' if you have the file hosted online. */
+    uploadType: "file" | "urlImport" | "csv" | "url";
+    /** The register of the importrequest. */
+    register: boolean;
+  };
+};
+export type UpdateEntityStatusApiResponse = unknown;
+export type UpdateEntityStatusApiArg = {
+  entityType: string;
+  body: {
+    id?: string;
+    status: string;
+    displayName?: string;
+  };
+};
 export type GetOrgsApiResponse = /** status 200 Organizations response */ {
   /** Zero-based page index returned in this response. */
   page?: number;
@@ -17788,6 +18829,32 @@ export const {
   useLazyGetCredentialByIdQuery,
   useGetUserKeysQuery,
   useLazyGetUserKeysQuery,
+  useGetMeshModelsQuery,
+  useLazyGetMeshModelsQuery,
+  useGetComponentsQuery,
+  useLazyGetComponentsQuery,
+  useGetRelationshipsQuery,
+  useLazyGetRelationshipsQuery,
+  useGetRegistrantsQuery,
+  useLazyGetRegistrantsQuery,
+  useGetComponentsFromModalQuery,
+  useLazyGetComponentsFromModalQuery,
+  useGetRelationshipsFromModalQuery,
+  useLazyGetRelationshipsFromModalQuery,
+  useGetModelCategoriesQuery,
+  useLazyGetModelCategoriesQuery,
+  useGetModelFromCategoryQuery,
+  useLazyGetModelFromCategoryQuery,
+  useGetModelByNameQuery,
+  useLazyGetModelByNameQuery,
+  useGetComponentByNameQuery,
+  useLazyGetComponentByNameQuery,
+  useGetComponentsByModelAndKindQuery,
+  useLazyGetComponentsByModelAndKindQuery,
+  useExportModelQuery,
+  useLazyExportModelQuery,
+  useImportMeshModelMutation,
+  useUpdateEntityStatusMutation,
   useGetOrgsQuery,
   useLazyGetOrgsQuery,
   useCreateOrgMutation,
